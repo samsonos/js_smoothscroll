@@ -56,9 +56,11 @@ var sjsSmoothScroll = function(params) {
             s.pageScrollTop(anchor.offset().top, _startSpeed, _finishHandler);
         }
     }
-
-    // Bind scroll event
-    s(window).scroll(function(){
+    
+	/**
+	 * Generic container scroll event handler for switching active links
+	 */
+    _self.scrollHander = function(){
         // Get current scroll
         var st = s.pageScrollTop();
 
@@ -85,7 +87,13 @@ var sjsSmoothScroll = function(params) {
             // Increase anchor counter
             idx++;
         });
-    });
+    };
+	
+	// Call first time by ourselves to select active link
+	_self.scrollHander();
+	
+	// Bind scroll event
+	s(window).scroll(_self.scrollHander);
 
     // Iterate all objects in current DOM collection
     return _self.each(function(link){
@@ -97,9 +105,14 @@ var sjsSmoothScroll = function(params) {
             link.click(function(){
                 // Call before handler
                 if (_beforeHandler()) {
-                    s.trace('scrolling page to '+anchor.a('id')+' '+anchor.offset().top);
+                    //s.trace('scrolling page to '+anchor.a('id')+' '+anchor.offset().top);
                     // Perform animation to scroll page to anchor
-                    s.scrollPageTo(anchor, _speed, _finishHandler);
+                    s.scrollPageTo(anchor, _speed, function(){
+						// Change current window hash
+						window.location.hash = anchor.a('id');
+						// Call external finish handler
+						_finishHandler();
+					});
                 }
 
                 // Ignore link default action propagation
