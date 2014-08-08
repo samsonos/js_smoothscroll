@@ -8,6 +8,8 @@ var sjsSmoothScroll = function(params) {
     // Pointer to current object
     var _self = this;
 
+    s.trace(_self);
+
     // Avoid errors when no params is passed
     if(!params) params = {};
 
@@ -23,6 +25,8 @@ var sjsSmoothScroll = function(params) {
     var _menuStep = params.menuStep ? params._menuStep : 100;
     /** CSS class to mark active link */
     var _menuCSSActive = params.menuCSSActive ? params.menuCSSActive : 'active';
+    /** Offset from element in pixels */
+    var _offset = params.offset ? params.offset : 0;
 
     /**
      * Get SamsonJS DOM node anchor from link
@@ -77,8 +81,8 @@ var sjsSmoothScroll = function(params) {
                 if (anchor.offset().top - st < _menuStep) {
 
                     // Make all links inactive
-                    _self.removeClass('active');
-
+                    _self.removeClass(_menuCSSActive);
+                    //s.trace(_self);
                     // Activate current link matches this slide
                     _self.elements[idx].addClass(_menuCSSActive);
                 }
@@ -106,8 +110,8 @@ var sjsSmoothScroll = function(params) {
                 // Call before handler
                 if (_beforeHandler()) {
                     //s.trace('scrolling page to '+anchor.a('id')+' '+anchor.offset().top);
-                    // Perform animation to scroll page to anchor
-                    s.scrollPageTo(anchor, _speed, function(){
+                    // Perform animation to scroll page to anchor + offset
+                    s.scrollPageTo(anchor.offset().top + _offset, _speed, function(){
 						// Change current window hash
 						window.location.hash = anchor.a('id');
 						// Call external finish handler
