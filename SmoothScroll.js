@@ -8,8 +8,6 @@ var sjsSmoothScroll = function(params) {
     // Pointer to current object
     var _self = this;
 
-    s.trace(_self);
-
     // Avoid errors when no params is passed
     if(!params) params = {};
 
@@ -78,7 +76,7 @@ var sjsSmoothScroll = function(params) {
             var anchor = _self.getAnchor(link);
             if(anchor) {
                 // If scroll is near this anchor
-                if (anchor.offset().top - st < _menuStep) {
+                if (anchor.offset().top - st + _offset < _menuStep) {
 
                     // Make all links inactive
                     _self.removeClass(_menuCSSActive);
