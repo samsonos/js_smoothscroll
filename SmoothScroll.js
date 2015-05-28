@@ -69,6 +69,9 @@ var sjsSmoothScroll = function(params) {
         // Current anchor index
         var idx = 0;
 
+        // Save most relevant hash
+        var hashString = '';
+
         // Iterate ALL scroll links to make the most relevant link active
         _self.each(function(link){
 
@@ -83,12 +86,22 @@ var sjsSmoothScroll = function(params) {
                     //s.trace(_self);
                     // Activate current link matches this slide
                     _self.elements[idx].addClass(_menuCSSActive);
+
+                    // Save link
+                    hashString = '#' + anchor.a('id');
                 }
             }
 
             // Increase anchor counter
             idx++;
         });
+
+        if(window.history.pushState) {
+            window.history.pushState(null, null, hashString);
+        } else {
+            window.location.hash = hashString;
+        }
+
     };
 	
 	// Call first time by ourselves to select active link
