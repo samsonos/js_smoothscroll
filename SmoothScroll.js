@@ -96,8 +96,9 @@ var sjsSmoothScroll = function(params) {
             idx++;
         });
 
+        console.log();
         if(window.history.pushState) {
-            window.history.pushState(null, null, hashString);
+            window.history.pushState(null, null, window.location.pathname + hashString);
         } else {
             window.location.hash = hashString;
         }
