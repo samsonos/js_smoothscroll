@@ -25,6 +25,13 @@ var sjsSmoothScroll = function(params) {
     var _menuCSSActive = params.menuCSSActive ? params.menuCSSActive : 'active';
     /** Offset from element in pixels */
     var _offset = params.offset ? params.offset : 0;
+    /** External handler when menu item state is changed */
+    var _stateChangeHandler = params.stateChangeHandler ? params.stateChangeHandler : function(menuLink, allLinks){
+        // Make all links inactive
+        allLinks.removeClass(_menuCSSActive);
+        // Activate current link matches this slide
+        menuLink.addClass(_menuCSSActive);
+    };
 
     /**
      * Get SamsonJS DOM node anchor from link
@@ -80,12 +87,8 @@ var sjsSmoothScroll = function(params) {
             if(anchor) {
                 // If scroll is near this anchor
                 if (anchor.offset().top - st + _offset < _menuStep) {
-
-                    // Make all links inactive
-                    _self.removeClass(_menuCSSActive);
-                    //s.trace(_self);
-                    // Activate current link matches this slide
-                    _self.elements[idx].addClass(_menuCSSActive);
+                    // Call state changing handler
+                    _stateChangeHandler(_self.elements[idx], _self);
 
                     // Save link
                     hashString = '#' + anchor.a('id');
@@ -96,7 +99,7 @@ var sjsSmoothScroll = function(params) {
             idx++;
         });
 
-        console.log();
+        // Change url with hash of active item
         if(window.history.pushState) {
             window.history.pushState(null, null, window.location.pathname + hashString);
         } else {
