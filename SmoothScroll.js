@@ -94,18 +94,24 @@ var sjsSmoothScroll = function(params) {
     // Save most relevant hash
     var _hashString = '';
 
-    /**
-     * Generic container scroll event handler for switching active links
-     */
-    _self.scrollHander = function (obj, obj, event) {
-        // Get current scroll
-        var st = s.pageScrollTop();
+    // Viewport height
+    var _screenHeight = s.pageHeight();
+
+    // Current scroll Y position
+    var _scrollTop;
+
+
+
+    // Our timer function to reduce recalculations
+    setInterval(function() {
+        // Add offset
+        _scrollTop += _offset;
 
         // Current anchor index
         var idx = 0;
 
         // Iterate ALL anchors
-        for(var i in _anchors) {
+        for (var i in _anchors) {
             var anchor = _anchors[i];
 
             // If this menu item is not already active
@@ -114,13 +120,18 @@ var sjsSmoothScroll = function(params) {
                 var anchorOffset = anchor.top;
                 // Get current anchor height
                 var anchorHeight = anchor.height;
+                // Get current anchor absolute bottom Y position on page
+                var anchorOffsetBottom = anchor.top + anchor.height;
+
+                // Get current center screen Y position
+                var scrollMiddleY = _scrollTop + _screenHeight / 2;
 
                 // If scroll is near this anchor
-                if (st + _offset > anchorOffset && st + _offset < anchorOffset + anchorHeight) {
+                if ((scrollMiddleY > anchorOffset && scrollMiddleY < anchorOffsetBottom) || (scrollMiddleY > anchorOffset && scrollMiddleY < anchorOffsetBottom)) {
                     // Store active menu item index
                     _currentActiveIdx = idx;
 
-                    //s.trace('Changing active item to '+idx);
+                    s.trace('Changing active item to '+idx);
 
                     // Call state changing handler
                     var anchorId = _stateChangeHandler(_self.elements[idx], _self);
@@ -140,13 +151,21 @@ var sjsSmoothScroll = function(params) {
             // Increase anchor counter
             idx++;
         }
+    }, 200);
+
+    /**
+     * Generic container scroll event handler for switching active links
+     */
+    _self.scrollHandler = function (obj, obj, event) {
+        // Set current scroll
+        _scrollTop = s.pageScrollTop();
     };
 
     // Call first time by ourselves to select active link
-    _self.scrollHander();
+    _self.scrollHandler();
 
     // Bind scroll event
-    s(window).scroll(_self.scrollHander);
+    s(window).scroll(_self.scrollHandler);
 
     // Iterate all objects in current DOM collection
     return _self.each(function (link) {
