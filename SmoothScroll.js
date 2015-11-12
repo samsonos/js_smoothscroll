@@ -61,6 +61,22 @@ var sjsSmoothScroll = function(params) {
         }
     };
 
+    /** Collection of cached anchors */
+    var _anchors = [];
+
+    // Iterate ALL scroll links to make the most relevant link active
+    _self.each(function (link) {
+        // Get DOM element by link
+        var anchor = _self.getAnchor(link);
+
+        // Retrieve only need info from anchor
+        _anchors.push({
+            top: anchor.offset().top,
+            height: anchor.height(),
+            id: anchor.a('id')
+        });
+    });
+
     // If we have hash pointer on plugin load
     if (typeof window.location.hash != 'undefined') {
         // Find anchor by URL hash identifier
@@ -88,18 +104,16 @@ var sjsSmoothScroll = function(params) {
         // Current anchor index
         var idx = 0;
 
-        // Iterate ALL scroll links to make the most relevant link active
-        _self.each(function (link) {
+        // Iterate ALL anchors
+        for(var i in _anchors) {
+            var anchor = _anchors[i];
 
-            // Find anchor by URL hash identifier
-            var anchor = _self.getAnchor(link);
-
-            // If we have found anchor and this menu item is not already active
-            if (anchor && idx !== _currentActiveIdx) {
+            // If this menu item is not already active
+            if (idx !== _currentActiveIdx) {
                 // Get current anchor absolute position on page
-                var anchorOffset = anchor.offset().top;
+                var anchorOffset = anchor.top;
                 // Get current anchor height
-                var anchorHeight = anchor.height();
+                var anchorHeight = anchor.height;
 
                 // If scroll is near this anchor
                 if (st + _offset > anchorOffset && st + _offset < anchorOffset + anchorHeight) {
@@ -112,19 +126,19 @@ var sjsSmoothScroll = function(params) {
                     var anchorId = _stateChangeHandler(_self.elements[idx], _self);
 
                     // Save link
-                    _hashString = '#' + anchor.a('id');
+                    _hashString = '#' + anchor.id;
+
+                    // Change url with hash of active item
+                    if (window.history.pushState) {
+                        window.history.pushState(null, null, window.location.pathname + _hashString);
+                    } else {
+                        window.location.hash = _hashString;
+                    }
                 }
             }
 
             // Increase anchor counter
             idx++;
-        });
-
-        // Change url with hash of active item
-        if (window.history.pushState) {
-            window.history.pushState(null, null, window.location.pathname + _hashString);
-        } else {
-            window.location.hash = _hashString;
         }
     };
 
