@@ -57,6 +57,7 @@ var sjsSmoothScroll = function(params) {
             // Return SamsonJS DOM node object
             return anchor;
         } else { // Return false to use in if's
+            console.log('Cannot find anchor element('+hash+')');
             return false;
         }
     };
@@ -68,13 +69,14 @@ var sjsSmoothScroll = function(params) {
     _self.each(function (link) {
         // Get DOM element by link
         var anchor = _self.getAnchor(link);
-
-        // Retrieve only need info from anchor
-        _anchors.push({
-            top: anchor.offset().top,
-            height: anchor.height(),
-            id: anchor.a('id')
-        });
+        if (anchor) {
+            // Retrieve only need info from anchor
+            _anchors.push({
+                top: anchor.offset().top,
+                height: anchor.height(),
+                id: anchor.a('id')
+            });
+        }
     });
 
     // If we have hash pointer on plugin load
@@ -99,8 +101,6 @@ var sjsSmoothScroll = function(params) {
 
     // Current scroll Y position
     var _scrollTop;
-
-
 
     // Our timer function to reduce recalculations
     setInterval(function() {
@@ -131,7 +131,7 @@ var sjsSmoothScroll = function(params) {
                     // Store active menu item index
                     _currentActiveIdx = idx;
 
-                    s.trace('Changing active item to '+idx);
+                    //s.trace('Changing active item to '+idx);
 
                     // Call state changing handler
                     var anchorId = _stateChangeHandler(_self.elements[idx], _self);
