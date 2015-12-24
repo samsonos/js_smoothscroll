@@ -82,7 +82,7 @@ var sjsSmoothScroll = function(params) {
     // If we have hash pointer on plugin load
     if (typeof window.location.hash != 'undefined') {
         // Find anchor by URL hash identifier
-        var anchor = _self.getAnchor('#' + window.location.hash);
+        var anchor = _self.getAnchor(window.location.hash);
         // Check if before handler returns true
         if (anchor && _beforeHandler()) {
             // Scroll window to this anchor
