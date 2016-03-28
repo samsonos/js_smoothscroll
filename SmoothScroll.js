@@ -104,9 +104,6 @@ var sjsSmoothScroll = function(params) {
 
     // Our timer function to reduce recalculations
     setInterval(function() {
-        // Add offset
-        _scrollTop += _offset;
-
         // Current anchor index
         var idx = 0;
 
@@ -124,7 +121,7 @@ var sjsSmoothScroll = function(params) {
                 var anchorOffsetBottom = anchor.top + anchor.height;
 
                 // Get current center screen Y position
-                var scrollMiddleY = _scrollTop + _screenHeight / 2;
+                var scrollMiddleY = _scrollTop + _screenHeight / 2 + _offset;
 
                 // If scroll is near this anchor
                 if ((scrollMiddleY > anchorOffset && scrollMiddleY < anchorOffsetBottom) || (scrollMiddleY > anchorOffset && scrollMiddleY < anchorOffsetBottom)) {
