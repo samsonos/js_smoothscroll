@@ -148,7 +148,7 @@ var sjsSmoothScroll = function(params) {
             // Increase anchor counter
             idx++;
         }
-    }, 200);
+    }, 100);
 
     /**
      * Generic container scroll event handler for switching active links
